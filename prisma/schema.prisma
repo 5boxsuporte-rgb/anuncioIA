@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  BASIC
+  PRO
+  AGENCY
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  plan         Plan     @default(FREE)
+  /// Créditos consumidos no ciclo atual. O limite vem de lib/billing/plans.ts
+  creditsUsed  Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  products Product[]
+  analyses Analysis[]
+  usage    UsageRecord[]
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  marketplace String  @default("mercadolivre")
+  externalId String?
+  url        String?
+  title      String
+  /// Dados normalizados do anúncio original
+  data       Json
+  createdAt  DateTime @default(now())
+
+  analyses Analysis[]
+
+  @@index([userId])
+}
+
+model Analysis {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId      String?
+  product        Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  mode           String   @default("ai")
+  overallScore   Int
+  creditsCharged Int      @default(1)
+  /// Resultado completo (validado por lib/validation/analysis.ts)
+  result         Json
+  createdAt      DateTime @default(now())
+
+  contents GeneratedContent[]
+  usage    UsageRecord[]
+
+  @@index([userId, createdAt])
+}
+
+model GeneratedContent {
+  id         String   @id @default(cuid())
+  analysisId String
+  analysis   Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  /// title, description, benefits, faq, keywords, ...
+  kind       String
+  content    Json
+  createdAt  DateTime @default(now())
+
+  @@index([analysisId])
+}
+
+/// Livro-razão de créditos: cada linha é um consumo (ou ajuste) de créditos.
+model UsageRecord {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analysisId String?
+  analysis   Analysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  credits    Int
+  reason     String
+  createdAt  DateTime  @default(now())
+
+  @@index([userId, createdAt])
+}
