@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Propósito com Direção – Amostra Grátis</title>
+  <meta name="description" content="Baixe agora sua amostra grátis do livro Propósito com Direção, de André Lopes.">
+  <style>
+    html, body { margin: 0; background: #000; }
+    body { min-height: 100vh; display: flex; justify-content: center; }
+    .page { position: relative; width: 100%; max-width: 560px; line-height: 0; }
+    .page img { width: 100%; height: auto; display: block; }
+    /* Área clicável sobre o livro (centro da imagem) */
+    .book-link {
+      position: absolute;
+      left: 24%; top: 31%; width: 52%; height: 43.5%;
+      display: block; cursor: pointer; border-radius: 6px;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .25s ease, box-shadow .25s ease;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    .book-link:hover, .book-link:focus-visible {
+      transform: scale(1.03);
+      box-shadow: 0 0 40px 8px rgba(255, 190, 40, .55);
+      outline: none;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 190, 40, 0); }
+      50%      { box-shadow: 0 0 36px 6px rgba(255, 190, 40, .35); }
+    }
+    @media (prefers-reduced-motion: reduce) { .book-link { animation: none; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <img src="anuncio.jpg" alt="Baixe agora sua amostra grátis do livro Propósito com Direção, de André Lopes" width="900" height="1600">
+    <!-- TROQUE o href abaixo pelo endereço da página de destino -->
+    <a class="book-link" href="https://SEU-ENDERECO-AQUI.com" aria-label="Clique para baixar a amostra grátis do livro Propósito com Direção"></a>
+  </main>
+</body>
+</html>
